@@ -3,7 +3,6 @@ const User = require("../models/user.model")
 // @desc        get all users
 // @route       GET /api/v1/users/
 // @access      public
-
 exports.getAllUsers = async (req, res)=> {
     try {
 
@@ -16,11 +15,9 @@ exports.getAllUsers = async (req, res)=> {
     }
 }
 
-
 // @desc        get an user by id
 // @route       GET /api/v1/users/:id
 // @access      public
-
 exports.getUserById = async(req, res)=>{
     const {id} = req.params
 
@@ -28,7 +25,7 @@ exports.getUserById = async(req, res)=>{
 
         const user = await User.findOne({$and: [{_id: id}, {status: true}]})
 
-        res.status(200).json({ok: true, data: user},{new: true})
+        res.status(200).json({ok: true, data: user})
 
     } catch (error) {
         console.log(error)
@@ -39,12 +36,11 @@ exports.getUserById = async(req, res)=>{
 // @desc        get user logged
 // @route       GET /api/v1/users/current-user
 // @access      private ADMIN, USER
-
 exports.getCurrentUser = async (req, res)=>{
     const { user }= req.user
     try {
         
-        res.status(200).json({ok: true, data: user},{new: true})
+        res.status(200).json({ok: true, data: user})
 
     } catch (error) {
         console.log(error)
@@ -55,7 +51,6 @@ exports.getCurrentUser = async (req, res)=>{
 // @desc        edit an user by id
 // @route       PUT /api/v1/users/:id
 // @access      private ADMIN, USER
-
 exports.editUser = async (req, res)=>{
     const {id}= req.params
 
@@ -80,7 +75,6 @@ exports.editUser = async (req, res)=>{
 // @desc        delete an user by id
 // @route       PUT /api/v1/users/:id
 // @access      private ADMIN, USER
-
 exports.deleteUser = async (req, res)=>{
     const {id}= req.params
 
