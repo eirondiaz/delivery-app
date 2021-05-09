@@ -31,8 +31,7 @@ const UserSchema = Schema({
     status: {
         type: Boolean,
         default: true
-    }
-    
+    }  
 }, {
     versionKey: false,
     timestamps: true

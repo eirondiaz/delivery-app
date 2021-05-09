@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const User = require('../models/user.model')
 
-exports.authMdlw = async (req, res, next) => {
+exports.adminMdlw = async (req, res, next) => {
     try {
         if (!req.headers.authorization) 
             return res.status(401).json({ok: false, msg: 'unauthorized'})
@@ -14,6 +14,8 @@ exports.authMdlw = async (req, res, next) => {
 
         if (!_user) return res.status(404).json({ok: false, msg: 'user not found'}) 
 
+        if (_user.role !== 'ADMIN_ROLE') return res.status(403).json({ok: false, msg: 'role must b ADMIN_ROLE'}) 
+        
         req.user = _user
         next()
         
