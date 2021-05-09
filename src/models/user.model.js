@@ -7,6 +7,18 @@ const UserSchema = Schema({
         trim: true,
         unique: true
     },
+    email:{
+        type: String,
+        required: [true, 'Email required!'],
+        trim: true,
+        unique: true
+    },
+    pass:{
+        type: String,
+        required: [true, 'Password required!'],
+        trim: true,
+        select: false
+    },
     name:{
         type: String,
         required: [true, 'Name required!'],
@@ -32,7 +44,7 @@ const UserSchema = Schema({
         type: Boolean,
         default: true
     }
-    
+
 }, {
     versionKey: false,
     timestamps: true
