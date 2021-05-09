@@ -13,5 +13,6 @@ app.use(express.json())
 
 //routes
 app.get('/', (req, res) => res.send('hola'))
+app.use('/api/v1/auth', require('./routes/auth.routes'))
 
 module.exports = app
