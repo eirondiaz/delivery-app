@@ -60,7 +60,7 @@ exports.updateProduct = async (re, res) => {
     try {
         const prod = await Product.findById(id)
 
-        if (!prod) return res.status(404).json({ok: false, msg: 'product not found'})
+        !prod && res.status(404).json({ok: false, msg: 'product not found'})
 
         const updatedProd = await Product.findByIdAndUpdate(id, rest, { new: true })
 
@@ -79,7 +79,7 @@ exports.deleteProduct = async (re, res) => {
     try {
         const prod = await Product.findById(id)
 
-        if (!prod) return res.status(404).json({ok: false, msg: 'product not found'})
+        !prod && res.status(404).json({ok: false, msg: 'product not found'})
 
         const deletedProd = await Product.findByIdAndDelete(id)
 
