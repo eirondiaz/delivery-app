@@ -1,3 +1,6 @@
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+
 // @desc        login an user
 // @route       POST /api/v1/auth/register
 // @access      public
