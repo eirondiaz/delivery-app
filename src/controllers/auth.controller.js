@@ -13,6 +13,8 @@ exports.login = async (req, res) => {
 
         if (!_user) return res.status(404).json({ok: false, msg: 'user not found'})
 
+        if (!_user.status) return res.status(400).json({ok: false, msg: 'user unavailable'})
+
         const isMatch = await bcrypt.compare(pass, _user.pass)
 
         if (!isMatch) return res.status(400).json({ok: false, msg: 'pass not match'})
