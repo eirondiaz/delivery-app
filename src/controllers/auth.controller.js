@@ -32,8 +32,31 @@ exports.login = async (req, res) => {
 // @route       POST /api/v1/auth/register
 // @access      public
 exports.register = async (req, res) => {
+    const { user, name, lastName, email, pass, phone } = req.body
     try {
-        
+        if (role.toUpperCase() === 'ADMIN_ROLE')
+            return res.status(400).json({ok: false, msg: 'role admin cant be created'})
+
+        let _user = await User.findOne({email})
+
+        if (_user) return res.status(400).json({ok: false, msg: 'email repeated'})
+
+        let hashed_pass = await bcrypt.hash(pass, 10)
+
+        _user = new User({
+            user,
+            name,
+            lastName, 
+            email,
+            phone,
+            pass: hashed_pass
+        })
+
+        await _user.save()
+
+        const token = await jwt.sign({_id: _user._id, role: _user.role}, process.env.JWT_SECRET || 'secretKey')
+        return res.status(201).json({ok: true, data: _user, token})
+
     } catch (error) {
         console.log(error)
         return res.status(500).json(error)
