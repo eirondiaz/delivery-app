@@ -50,6 +50,7 @@ exports.getCurrentUser = async (req, res)=>{
 // @desc        edit an user by id
 // @route       PUT /api/v1/users/:id
 // @access      private ADMIN, USER
+
 exports.editUser = async (req, res)=>{
     const {id}= req.params
 

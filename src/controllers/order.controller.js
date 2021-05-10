@@ -2,6 +2,7 @@ const Order = require('../models/order.model')
 const Product = require('../models/product.model')
 const {isValidObjectId} = require('mongoose')
 
+const History = require('../models/history.model')
 // @desc        create an order
 // @route       POST /api/v1/orders/
 // @access      private ADMIN
@@ -130,9 +131,14 @@ exports.modifyOrderStatus = async (req, res)=> {
             editedOrder = await Order.findByIdAndUpdate(id, {status: 'delivered'}, {new: true})
             .populate('products')
             .populate('user')
+            
+            const history = new History({order: order._id, user: order.user})
+            
+            await history.save()
         } 
 
         if(status==='delivered'){
+
             return res.status(200).json({ok:true, data: order})
             .populate('products')
             .populate('user')
