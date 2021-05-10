@@ -16,8 +16,8 @@ const OrderSchema = Schema({
     },
     status:{
         type: String,
-        enum:['ORDERED', 'ACEPTED', 'IN TRANSIT', 'DELIVERED'],
-        default: 'ORDERED'
+        enum:['ordered', 'accepted', 'in-transit', 'delivered'],
+        default: 'ordered'
     },
     address:{
         type: String,
