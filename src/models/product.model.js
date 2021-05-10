@@ -7,6 +7,10 @@ const ProductSchema = Schema({
         trim: true,
         unique: true
     },
+    photo: {
+        type: String,
+        required: [true, 'Photo required']
+    },
     price: {
         type: Number,
         required: [true, 'Price required!'],
