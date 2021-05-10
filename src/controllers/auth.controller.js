@@ -19,10 +19,9 @@ exports.login = async (req, res) => {
         const isMatch = await bcrypt.compare(pass, _user.pass)
 
         !isMatch && res.status(400).json({ok: false, msg: 'pass not match'})
+        const token = await jwt.sign({_id: _user._id, role: _user.role}, process.env.JWT_KEY || 'secretKey')
 
-        
-
-        res.status(200).json({ok: true, data: _user})
+        res.status(200).json({ok: true, data: _user, token})
     } catch (error) {
         console.log(error)
         return res.status(500).json(error)
