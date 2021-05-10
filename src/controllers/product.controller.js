@@ -39,6 +39,7 @@ exports.getProductById = async (req, res) => {
 // @route       POST /api/v1/products
 // @access      private ADMIN
 exports.createProduct = async (req, res) => {
+    // const {}
     try {
         const newProd = new Product(req.body)
 
@@ -74,6 +75,7 @@ exports.updateProduct = async (re, res) => {
 // @desc        delete product
 // @route       DELETE /api/v1/products/:id
 // @access      private ADMIN
+
 exports.deleteProduct = async (re, res) => {
     const { id } = req.params
     try {

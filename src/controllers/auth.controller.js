@@ -7,8 +7,9 @@ const User = require('../models/user.model')
 // @access      public
 exports.login = async (req, res) => {
     const { email, pass } = req.body
+
     try {
-        const _user = await User.find({email})
+        const _user = await User.findOne({email})
             .select('+pass')
 
         !_user && res.status(404).json({ok: false, msg: 'user not found'})
@@ -19,9 +20,9 @@ exports.login = async (req, res) => {
 
         !isMatch && res.status(400).json({ok: false, msg: 'pass not match'})
 
-        const {pass, ...userRest} = _user
+        
 
-        res.status(200).json({ok: true, data: userRest})
+        res.status(200).json({ok: true, data: _user})
     } catch (error) {
         console.log(error)
         return res.status(500).json(error)
@@ -32,10 +33,11 @@ exports.login = async (req, res) => {
 // @route       POST /api/v1/auth/register
 // @access      public
 exports.register = async (req, res) => {
-    const { user, name, lastName, email, pass, phone } = req.body
+    const { user, name, lastName, email, pass, phone, role } = req.body
+
     try {
-        if (role.toUpperCase() === 'ADMIN_ROLE')
-            return res.status(400).json({ok: false, msg: 'role admin cant be created'})
+        // if (role.toUpperCase() === 'ADMIN_ROLE')
+        //     return res.status(400).json({ok: false, msg: 'role admin cant be created'})
 
         let _user = await User.findOne({email})
 

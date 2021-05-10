@@ -5,7 +5,6 @@ const User = require("../models/user.model")
 // @access      public
 exports.getAllUsers = async (req, res)=> {
     try {
-
         const users = await User.find({status: true})
         
         res.status(200).json({ok: true, data: users},{new: true})
