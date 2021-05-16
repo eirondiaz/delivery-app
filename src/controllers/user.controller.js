@@ -36,21 +36,20 @@ exports.getUserById = async(req, res)=>{
 // @route       GET /api/v1/users/current-user
 // @access      private ADMIN, USER
 exports.getCurrentUser = async (req, res)=>{
-    const { user }= req.user
+    const { user }= req
     try {
         
-        res.status(200).json({ok: true, data: user})
+        return res.status(200).json({ok: true, data: user})
 
     } catch (error) {
         console.log(error)
-        res.status(500).json(error)
+        return res.status(500).json(error)
     }
 }
 
 // @desc        edit an user by id
 // @route       PUT /api/v1/users/:id
 // @access      private ADMIN, USER
-
 exports.editUser = async (req, res)=>{
     const {id}= req.params
 
