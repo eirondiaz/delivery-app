@@ -7,13 +7,13 @@ router.get('/',[
     authMdlw
 ],  userCtrl.getAllUsers )
 
-router.get('/:id',[
-    authMdlw
-],  userCtrl.getUserById )
-
 router.get('/current-user',[
     authMdlw
 ],  userCtrl.getCurrentUser )
+
+router.get('/:id',[
+    authMdlw
+],  userCtrl.getUserById )
 
 router.put('/:id', [
 
