@@ -36,10 +36,9 @@ exports.getUserById = async(req, res)=>{
 // @route       GET /api/v1/users/current-user
 // @access      private ADMIN, USER
 exports.getCurrentUser = async (req, res)=>{
-    const { user }= req
     try {
         
-        return res.status(200).json({ok: true, data: user})
+        return res.status(200).json({ok: true, data: req.user})
 
     } catch (error) {
         console.log(error)
