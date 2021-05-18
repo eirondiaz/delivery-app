@@ -1,39 +1,31 @@
 const Order = require('../models/order.model')
-const Product = require('../models/product.model')
+const Cart = require('../models/cart.model')
 const {isValidObjectId} = require('mongoose')
-
 const History = require('../models/history.model')
+
 // @desc        create an order
 // @route       POST /api/v1/orders/
 // @access      private ADMIN
-
 exports.createOrder =async(req,res)=>{
-    const { products, address } = req.body
-
-    let total = 0
-    
-    await Promise.all( products.map (async _id => {
-        !isValidObjectId (_id) && res.status(400).json({ok: false, msg: 'Product does not exist' + _id})
-
-        let prod = await Product.findById(_id)
-    
-        !prod && res.status(400).json({ok: false, msg: 'Product does not exist' + _id})
-
-        total = total + prod.price
-    }))
+    const { total, address } = req.body
     
     try {
-        
-        const newOrder = new Order({
-            products,
-            address,
+        const carts = await Cart.find({user: req.user._id})
+            .select('-user')
+            .populate('product')
+
+        carts.length === 0 && res.status(400).json({ok: false, msg: 'empty cart'})
+
+        const order = new Order({
+            items: carts,
             user: req.user._id,
-            total
+            total,
+            address
         })
 
-        await newOrder.save()
+        await order.save()
 
-        res.status(200).json({ok: true, data: newOrder})
+        return res.status(200).json({ok: true, data: order})
     } catch (error) {
         console.log(error)
         return res.status(500).json(error)
@@ -43,7 +35,6 @@ exports.createOrder =async(req,res)=>{
 // @desc        get all orders
 // @route       GET /api/v1/orders/
 // @access      private ADMIN
-
 exports.getAllOrders = async(req, res)=>{
     
     const {status} = req.query
@@ -53,9 +44,9 @@ exports.getAllOrders = async(req, res)=>{
         
         if(status) query = Order.find({status})
         
-        const orders = await query.populate('products').populate('user')
+        const orders = await query.populate('user')
 
-        res.status(200).json({ok:true, data: orders})
+        return res.status(200).json({ok:true, data: orders})
     } catch (error) {
         console.log(error)
         return res.status(500).json(error)
@@ -63,11 +54,9 @@ exports.getAllOrders = async(req, res)=>{
 
 }
 
-
 // @desc        get all orders from user
 // @route       GET /api/v1/orders/user
 // @access      public USER
-
 exports.getAllOrdersByUserLogged = async(req, res)=>{
     
     const {status} = req.query
@@ -77,32 +66,14 @@ exports.getAllOrdersByUserLogged = async(req, res)=>{
         
         if(status) query = Order.find({$and:[{status}, {user: req.user._id}] })
         
-        const orders = await query.populate('products').populate('user')
+        const orders = await query.populate('user')
 
-        res.status(200).json({ok:true, data: orders})
+        return res.status(200).json({ok:true, data: orders})
     } catch (error) {
         console.log(error)
         return res.status(500).json(error)
     }
 
-}
-
-// @desc        get orders by order status
-// @route       GET /api/v1/orders/
-// @access      private ADMIN
-
-exports.getAllOrdersByProduct = async(req, res)=>{
-    
-    const { product }= req.query
-    try {
-
-        const orders = await Order.find({products: product})
-        res.status(200).json({ok:true, data: orders})
-        
-    } catch (error) {
-        console.log(error)
-        return res.status(500).json(error)
-    }
 }
 
 exports.modifyOrderStatus = async (req, res)=> {
