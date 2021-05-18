@@ -25,6 +25,8 @@ exports.createOrder =async(req,res)=>{
 
         await order.save()
 
+        await Cart.deleteMany({user: req.user._id})
+
         return res.status(200).json({ok: true, data: order})
     } catch (error) {
         console.log(error)
