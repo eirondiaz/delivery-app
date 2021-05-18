@@ -20,6 +20,7 @@ const OrderSchema = Schema({
     },
     address:{
         type: String,
+        default: 'Empty'
     }
 },{
     versionKey: false,

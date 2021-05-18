@@ -43,7 +43,11 @@ const UserSchema = Schema({
     status: {
         type: Boolean,
         default: true
-    }  
+    }, 
+    address:{
+        type: String,
+        default: 'Empty'
+    }
 }, {
     versionKey: false,
     timestamps: true
