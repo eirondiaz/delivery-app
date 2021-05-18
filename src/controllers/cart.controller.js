@@ -2,7 +2,7 @@ const { findByIdAndDelete } = require('../models/cart.model')
 const Cart = require('../models/cart.model')
 const Product = require('../models/product.model')
 
-exports.getAllCarts = async () => {
+exports.getAllCarts = async (req, res) => {
     try {
         const carts = await Cart.find({user: req.user._id})
             .populate('product')
@@ -14,7 +14,7 @@ exports.getAllCarts = async () => {
     }
 }
 
-exports.createCart = async () => {
+exports.createCart = async (req, res) => {
     const { product, quantity } = req.body
     try {
         const prod = await Product.findById(product)
@@ -37,7 +37,7 @@ exports.createCart = async () => {
     }
 }
 
-exports.deleteCart = async () => {
+exports.deleteCart = async (req, res) => {
     try {
         const cardDeleted = await findByIdAndDelete(req.params.id)
 
