@@ -1,18 +1,17 @@
 const { Schema, model } = require("mongoose");
 
 const OrderSchema = Schema({
-    products: [{
+    items: [{
         type: Schema.Types.ObjectId,
-        ref: 'Product',
-        required: [true, 'Product required']
+        ref: 'Cart',
+        required: [true, 'item required']
     }],
     user: {
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
     total: {
-        type: Number,
-        required: [true, 'Total required']
+        type: Number
     },
     status:{
         type: String,
