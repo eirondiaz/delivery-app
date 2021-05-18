@@ -39,7 +39,7 @@ exports.createCart = async (req, res) => {
 
 exports.deleteCart = async (req, res) => {
     try {
-        const cardDeleted = await findByIdAndDelete(req.params.id)
+        const cardDeleted = await Cart.findByIdAndDelete(req.params.id)
 
         return res.status(200).json({ok: true, data: cardDeleted})
     } catch (error) {
