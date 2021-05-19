@@ -1,6 +1,6 @@
-const { Schema } = require("mongoose");
+const { Schema, model } = require("mongoose");
 
-const OrderSchema = Schema({
+const CouponSchema = Schema({
     code:{
         type: String,
         required: true,
@@ -54,3 +54,5 @@ const OrderSchema = Schema({
         }
     ]
 })
+
+module.exports = model('Coupon', CouponSchema)
