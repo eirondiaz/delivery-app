@@ -32,7 +32,7 @@ exports.login = async (req, res) => {
 // @route       POST /api/v1/auth/register
 // @access      public
 exports.register = async (req, res) => {
-    const { user, name, lastName, email, pass, phone, role } = req.body
+    const { user, name, lastName, email, pass, phone, role, address } = req.body
     try {
         role === 'ADMIN_ROLE' && res.status(400).json({ok: false, msg: 'role admin cant be created'})
 
@@ -48,6 +48,7 @@ exports.register = async (req, res) => {
             lastName, 
             email,
             phone,
+            address,
             pass: hashed_pass
         })
 
