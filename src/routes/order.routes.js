@@ -15,7 +15,7 @@ router.get('/',[
 ],  orderCtrl.getAllOrders)
 
 router.get('/user',[
-    adminMdlw
+    authMdlw
 ],  orderCtrl.getAllOrdersByUserLogged)
 
 router.put('/:id', [

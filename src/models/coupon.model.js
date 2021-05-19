@@ -5,6 +5,7 @@ const CouponSchema = Schema({
         type: String,
         required: true,
         trim: true,
+        unique: true,
         min: 16,
         max: 16
     },
