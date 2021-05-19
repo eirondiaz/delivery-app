@@ -21,16 +21,28 @@ exports.createCart = async (req, res) => {
 
         !prod && res.status(404).json({ok: false, msg: 'product not found'})
 
-        const cart = new Cart({
-            product,
-            quantity: Number(quantity),
-            total: Number(prod.price) * Number(quantity),
-            user: req.user._id
-        })
+        const cartExist = await Cart.findOne({$and:[{user: req.user._id}, {product}]})
 
-        await cart.save()
+        if (!cartExist) {
+            const cart = new Cart({
+                product,
+                quantity: Number(quantity),
+                total: Number(prod.price) * Number(quantity),
+                user: req.user._id
+            })
+    
+            await cart.save()
+    
+            return res.status(201).json({ok: true, data: cart})        
+        }
+        else {
+            let qty = quantity + cartExist.quantity
+            let total = Number(prod.price) * Number(qty)
+            const cartEdited = await Cart.findByIdAndUpdate(cartExist._id, {total, quantity: qty}, { new: true })
 
-        return res.status(201).json({ok: true, data: cart})        
+            return res.status(201).json({ok: true, data: cartEdited})        
+        }
+
     } catch (error) {
         console.log(error)
         return res.status(500).json(error)
