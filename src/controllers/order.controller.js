@@ -82,9 +82,9 @@ exports.getOrderById = async(req, res)=>{
 
         if (!order) return res.status(404).json({ok: false, msg: 'order not found'})
 
-        //console.log(order.user._id.toString() === _id.toString)
-        /* if (order.user._id.toString() !== _id.toString)
-            return res.status(200).json({ok:false, msg: 'the order dont belong to you'}) */
+        if (role === 'USER_ROLE' && order.user._id.toString() !== _id.toString())
+            return res.status(200).json({ok:false, msg: 'the order dont belong to you'})
+        
         await Product.populate(order.items, 'product')
 
         return res.status(200).json({ok:true, data: order})
