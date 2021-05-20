@@ -1,6 +1,7 @@
 const Order = require('../models/order.model')
 const Cart = require('../models/cart.model')
 const Coupon = require('../models/coupon.model')
+const Product = require('../models/product.model')
 const {isValidObjectId} = require('mongoose')
 const History = require('../models/history.model')
 
@@ -81,10 +82,10 @@ exports.getOrderById = async(req, res)=>{
 
         if (!order) return res.status(404).json({ok: false, msg: 'order not found'})
 
-        /* console.log(_id, order.user._id)
-        console.log(_id == order.user._id)
-        if (role === 'USER_ROLE' && order.user._id !== _id)
+        //console.log(order.user._id.toString() === _id.toString)
+        /* if (order.user._id.toString() !== _id.toString)
             return res.status(200).json({ok:false, msg: 'the order dont belong to you'}) */
+        await Product.populate(order.items, 'product')
 
         return res.status(200).json({ok:true, data: order})
     } catch (error) {
