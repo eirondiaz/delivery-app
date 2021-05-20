@@ -81,15 +81,16 @@ exports.getOrderById = async(req, res)=>{
 
         if (!order) return res.status(404).json({ok: false, msg: 'order not found'})
 
+        /* console.log(_id, order.user._id)
+        console.log(_id == order.user._id)
         if (role === 'USER_ROLE' && order.user._id !== _id)
-            return res.status(200).json({ok:false, msg: 'the order dont belong to you'})
+            return res.status(200).json({ok:false, msg: 'the order dont belong to you'}) */
 
         return res.status(200).json({ok:true, data: order})
     } catch (error) {
         console.log(error)
         return res.status(500).json(error)
     }
-
 }
 
 // @desc        get all orders
