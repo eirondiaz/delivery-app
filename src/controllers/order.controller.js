@@ -9,7 +9,7 @@ const History = require('../models/history.model')
 // @route       POST /api/v1/orders/
 // @access      private ADMIN
 exports.createOrder =async(req,res)=>{
-    const { total, address, coupon } = req.body
+    const { subtotal, address, coupon } = req.body
     
     try {
         let cpn
@@ -32,10 +32,18 @@ exports.createOrder =async(req,res)=>{
 
         carts.length === 0 && res.status(400).json({ok: false, msg: 'empty cart'})
 
+        let discount = 0
+        if (cpn) {
+            let per = cpn.discount / 100
+            discount = subtotal * per
+        }
+
         const order = new Order({
             items: carts,
             user: req.user._id,
-            total,
+            subtotal,
+            total: subtotal - discount,
+            discount,
             address,
             coupon
         })

@@ -9,6 +9,15 @@ const OrderSchema = Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
+    subtotal: {
+        type: Number,
+        required: [true, 'subtotal required']
+    },
+    discount: {
+        type: Number,
+        required: [true, 'discount required'],
+        default: 0
+    },
     total: {
         type: Number,
         required: [true, 'total required']
