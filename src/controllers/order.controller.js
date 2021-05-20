@@ -50,6 +50,12 @@ exports.createOrder =async(req,res)=>{
             }
         }
 
+        let usercpn = cpn.usedBy
+
+        usercpn.push({user: req.user._id, date: Date.now})
+
+        await Coupon.findByIdAndUpdate(cpn._id, {usedBy: usercpn})
+
         return res.status(200).json({ok: true, data: order})
     } catch (error) {
         console.log(error)
