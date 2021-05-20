@@ -70,6 +70,21 @@ exports.createOrder =async(req,res)=>{
     }
 }
 
+// @desc        get order by id
+// @route       GET /api/v1/orders/:id
+// @access      private ADMIN, USER
+exports.getOrderById = async(req, res)=>{
+    try {
+        const order = await Order.findById(req.params.id).populate('user')
+
+        return res.status(200).json({ok:true, data: order})
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json(error)
+    }
+
+}
+
 // @desc        get all orders
 // @route       GET /api/v1/orders/
 // @access      private ADMIN

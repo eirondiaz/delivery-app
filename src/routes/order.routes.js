@@ -18,6 +18,10 @@ router.get('/user',[
     authMdlw
 ],  orderCtrl.getAllOrdersByUserLogged)
 
+router.get('/:id',[
+    authMdlw
+],  orderCtrl.getOrderById)
+
 router.put('/:id', [
     adminMdlw
 ], orderCtrl.modifyOrderStatus)
