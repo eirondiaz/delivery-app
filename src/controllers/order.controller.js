@@ -79,6 +79,8 @@ exports.getOrderById = async(req, res)=>{
     try {
         const order = await Order.findById(id).populate('user')
 
+        if (!order) return res.status(404).json({ok: false, msg: 'order not found'})
+
         if (role === 'USER_ROLE' && order.user._id !== _id)
             return res.status(200).json({ok:false, msg: 'the order dont belong to you'})
 
