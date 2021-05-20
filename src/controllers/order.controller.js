@@ -74,8 +74,13 @@ exports.createOrder =async(req,res)=>{
 // @route       GET /api/v1/orders/:id
 // @access      private ADMIN, USER
 exports.getOrderById = async(req, res)=>{
+    const { id } = req.params
+    const { _id, role } = req.user
     try {
-        const order = await Order.findById(req.params.id).populate('user')
+        const order = await Order.findById(id).populate('user')
+
+        if (role === 'USER_ROLE' && order.user._id !== _id)
+            return res.status(200).json({ok:false, msg: 'the order dont belong to you'})
 
         return res.status(200).json({ok:true, data: order})
     } catch (error) {
