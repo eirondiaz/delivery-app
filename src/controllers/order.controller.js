@@ -11,15 +11,19 @@ exports.createOrder =async(req,res)=>{
     const { total, address, coupon } = req.body
     
     try {
-        const cpn =  Coupon.findOne({code: coupon})
+        let cpn
+        let cpnApplied
+        if (coupon) {
+            cpn = await Coupon.findOne({code: coupon})
 
-        !cpn && res.status(404).json({ok: false, msg: 'coupon not found'})
+            if(!cpn) return res.status(404).json({ok: false, msg: 'coupon not found'})
 
-        cpn.deprecated && res.status(200).json({ok: false, msg: 'coupon deprecated'})
+            cpn.deprecated && res.status(200).json({ok: false, msg: 'coupon deprecated'})
 
-        const cpnApplied = await Order.findOne({$and: [{user: req.user._id}, {coupon}]})
+            cpnApplied = await Order.findOne({$and: [{user: req.user._id}, {coupon}]})
 
-        cpnApplied && res.status(200).json({ok: false, msg: 'coupon already used'})
+            if(cpnApplied) return res.status(200).json({ok: false, msg: 'coupon already used'})
+        }
 
         const carts = await Cart.find({user: req.user._id})
             .select('-user')
@@ -39,7 +43,7 @@ exports.createOrder =async(req,res)=>{
 
         await Cart.deleteMany({user: req.user._id})
 
-        if (cpn.type === 'uses') {
+        if (coupon && cpn.type === 'uses') {
             let use = cpn.uses + 1
 
             if (use == cpn.usesLimit) {
@@ -50,11 +54,14 @@ exports.createOrder =async(req,res)=>{
             }
         }
 
-        let usercpn = cpn.usedBy
+        if (coupon) {
 
-        usercpn.push({user: req.user._id, date: Date.now})
+            let usercpn = cpn.usedBy
 
-        await Coupon.findByIdAndUpdate(cpn._id, {usedBy: usercpn})
+            usercpn.push({user: req.user._id, date: Date.now})
+
+            await Coupon.findByIdAndUpdate(cpn._id, {usedBy: usercpn})
+        }
 
         return res.status(200).json({ok: true, data: order})
     } catch (error) {

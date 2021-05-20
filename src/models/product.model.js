@@ -16,7 +16,8 @@ const ProductSchema = Schema({
         required: [true, 'Price required!'],
     },
     desc: {
-        type: String
+        type: String,
+        trim: true
     }
 },{
     versionKey: false
