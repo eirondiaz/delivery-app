@@ -21,6 +21,10 @@ const OrderSchema = Schema({
     address:{
         type: String,
         default: 'Empty'
+    },
+    coupon: {
+        type: Schema.Types.ObjectId,
+        ref: 'Coupon'
     }
 },{
     versionKey: false,

@@ -1,5 +1,6 @@
 const Order = require('../models/order.model')
 const Cart = require('../models/cart.model')
+const Coupon = require('../models/coupon.model')
 const {isValidObjectId} = require('mongoose')
 const History = require('../models/history.model')
 
@@ -7,9 +8,19 @@ const History = require('../models/history.model')
 // @route       POST /api/v1/orders/
 // @access      private ADMIN
 exports.createOrder =async(req,res)=>{
-    const { total, address } = req.body
+    const { total, address, coupon } = req.body
     
     try {
+        const cpn =  Coupon.findOne({code: coupon})
+
+        !cpn && res.status(404).json({ok: false, msg: 'coupon not found'})
+
+        cpn.deprecated && res.status(200).json({ok: false, msg: 'coupon deprecated'})
+
+        const cpnApplied = await Order.findOne({$and: [{user: req.user._id}, {coupon}]})
+
+        cpnApplied && res.status(200).json({ok: false, msg: 'coupon already used'})
+
         const carts = await Cart.find({user: req.user._id})
             .select('-user')
             .populate('product')
@@ -20,12 +31,24 @@ exports.createOrder =async(req,res)=>{
             items: carts,
             user: req.user._id,
             total,
-            address
+            address,
+            coupon
         })
 
         await order.save()
 
         await Cart.deleteMany({user: req.user._id})
+
+        if (cpn.type === 'uses') {
+            let use = cpn.uses + 1
+
+            if (use == cpn.usesLimit) {
+                await Coupon.findByIdAndUpdate(cpn._id, {uses: use, deprecated: true})
+            }
+            else if (use < cpn.usesLimit) {
+                await Coupon.findByIdAndUpdate(cpn._id, {uses: use})
+            }
+        }
 
         return res.status(200).json({ok: true, data: order})
     } catch (error) {

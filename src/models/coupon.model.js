@@ -4,14 +4,14 @@ const CouponSchema = Schema({
     code:{
         type: String,
         required: true,
-        trim: true,
+        trim: [true, 'code required'],
         unique: true,
         min: 16,
         max: 16
     },
     discount:{
         type: Number,
-        required:true,
+        required:[true, 'disscount required'],
         trim:true,
         default: 0,
         min: 0,
@@ -27,12 +27,11 @@ const CouponSchema = Schema({
         default: Date.now
     },
     dateLimit:{
-        type:Date,
-        required: true
+        type:Date
     },
     uses:{
         type: Number,
-        defaul: 0
+        default: 0
     },
     usesLimit:{
         type: Number,
@@ -54,6 +53,6 @@ const CouponSchema = Schema({
             }
         }
     ]
-})
+}, { versionKey: false })
 
 module.exports = model('Coupon', CouponSchema)
