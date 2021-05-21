@@ -13,7 +13,6 @@ exports.createOrder =async(req,res)=>{
     
     try {
         let cpn
-        let cpnApplied
         if (coupon) {
             cpn = await Coupon.findOne({code: coupon})
 
@@ -21,7 +20,7 @@ exports.createOrder =async(req,res)=>{
 
             cpn.deprecated && res.status(200).json({ok: false, msg: 'coupon deprecated'})
 
-            cpnApplied = await Order.findOne({$and: [{user: req.user._id}, {coupon}]})
+            let cpnApplied = await Order.findOne({$and: [{user: req.user._id}, {coupon}]})
 
             if(cpnApplied) return res.status(200).json({ok: false, msg: 'coupon already used'})
         }
@@ -56,15 +55,14 @@ exports.createOrder =async(req,res)=>{
             let use = cpn.uses + 1
 
             if (use == cpn.usesLimit) {
-                await Coupon.findByIdAndUpdate(cpn._id, {uses: use, deprecated: true})
+                await Coupon.findByIdAndUpdate({_id: cpn._id}, {uses: use, deprecated: true})
             }
             else if (use < cpn.usesLimit) {
-                await Coupon.findByIdAndUpdate(cpn._id, {uses: use})
+                await Coupon.findByIdAndUpdate({_id: cpn._id}, {uses: use})
             }
         }
 
         if (coupon) {
-
             let usercpn = cpn.usedBy
 
             usercpn.push({user: req.user._id, date: Date.now})

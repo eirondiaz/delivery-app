@@ -29,6 +29,9 @@ exports.getByCode = async (req, res) => {
     try {
         const coupon = await Coupon.findOne({code})
 
+        if (!coupon)
+            return res.status(404).json({ok: false, msg: 'coupon not found'})
+
         if (req.user.role === 'USER_ROLE') {
             if (coupon.deprecated)
                 return res.status(200).json({ok: false, msg: 'coupon deprecated'})
