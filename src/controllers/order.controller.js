@@ -14,7 +14,7 @@ exports.createOrder =async(req,res)=>{
     try {
         let cpn
         if (coupon) {
-            cpn = await Coupon.findOne({code: coupon})
+            cpn = await Coupon.findOne({_id: coupon})
 
             if(!cpn) return res.status(404).json({ok: false, msg: 'coupon not found'})
 
@@ -85,8 +85,8 @@ exports.getOrderById = async(req, res)=>{
     const { _id, role } = req.user
     try {
         const order = await Order.findById(id)
-            .populate('user')
             .populate('coupon')
+            .populate('user')
 
         if (!order) return res.status(404).json({ok: false, msg: 'order not found'})
 
@@ -134,7 +134,7 @@ exports.getAllOrdersByUserLogged = async(req, res)=>{
     const {status} = req.query
     try {
         
-        let query = Order.find({user: req.user._id})
+        let query = Order.find({user: req.user._id}).populate('coupon')
         
         if(status) query = Order.find({$and:[{status}, {user: req.user._id}] })
         
