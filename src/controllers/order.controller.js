@@ -84,7 +84,9 @@ exports.getOrderById = async(req, res)=>{
     const { id } = req.params
     const { _id, role } = req.user
     try {
-        const order = await Order.findById(id).populate('user')
+        const order = await Order.findById(id)
+            .populate('user')
+            .populate('coupon')
 
         if (!order) return res.status(404).json({ok: false, msg: 'order not found'})
 
@@ -112,7 +114,9 @@ exports.getAllOrders = async(req, res)=>{
         
         if(status) query = Order.find({status})
         
-        const orders = await query.populate('user')
+        const orders = await query
+            .populate('user')
+            .populate('coupon')
 
         return res.status(200).json({ok:true, data: orders})
     } catch (error) {
