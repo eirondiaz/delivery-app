@@ -2,6 +2,7 @@ const Order = require('../models/order.model')
 const Cart = require('../models/cart.model')
 const Coupon = require('../models/coupon.model')
 const Product = require('../models/product.model')
+const User = require('../models/user.model')
 const {isValidObjectId} = require('mongoose')
 const History = require('../models/history.model')
 
@@ -192,5 +193,29 @@ exports.modifyOrderStatus = async (req, res)=> {
     } catch (error) {
         console.log(error)
         return res.status(500).json(error)
+    }
+}
+
+exports.getTopUsers = async (req, res) => {
+    const { limit = 10 } = req.query
+    try {
+        //const top = await Order.aggregate([{"$sortByCount": "$user"}])
+        const top = await Order.aggregate([
+            {"$group": {_id: "$user", count: {"$sum": "$subtotal"}}},
+            {"$sort": { count : -1 } },
+            {"$limit": limit },
+            //{"$lookup" : { from: "User", localField: "_id", foreignField: "_id", as: "user" } },
+        ])
+
+        let h = top.map(x => x._id)
+        
+        const aa = await User.find({_id: {$in: top}})
+
+        top.map(x => x._id = aa.find(w => w._id.toString() === x._id.toString()))
+        
+        return res.status(200).json({ok: true, data: top})
+    } catch (error) {
+        console.log(error)
+        return res.status.json(error)
     }
 }

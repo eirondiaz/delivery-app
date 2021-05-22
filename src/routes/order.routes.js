@@ -14,6 +14,8 @@ router.get('/',[
     adminMdlw
 ],  orderCtrl.getAllOrders)
 
+router.get('/top-users', orderCtrl.getTopUsers)
+
 router.get('/user',[
     authMdlw
 ],  orderCtrl.getAllOrdersByUserLogged)
