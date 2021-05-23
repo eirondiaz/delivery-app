@@ -16,6 +16,10 @@ router.get('/',[
 
 router.get('/top-users', orderCtrl.getTopUsers)
 
+router.get('/top-products', orderCtrl.getTopProducts)
+
+router.get('/current-date', orderCtrl.getOrdersBycurrentDate)
+
 router.get('/user',[
     authMdlw
 ],  orderCtrl.getAllOrdersByUserLogged)

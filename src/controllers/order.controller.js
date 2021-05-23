@@ -5,6 +5,7 @@ const Product = require('../models/product.model')
 const User = require('../models/user.model')
 const {isValidObjectId} = require('mongoose')
 const History = require('../models/history.model')
+const moment = require('moment')
 
 // @desc        create an order
 // @route       POST /api/v1/orders/
@@ -201,13 +202,13 @@ exports.getTopUsers = async (req, res) => {
     try {
         //const top = await Order.aggregate([{"$sortByCount": "$user"}])
         const top = await Order.aggregate([
-            {"$group": {_id: "$user", count: {"$sum": "$subtotal"}}},
-            {"$sort": { count : -1 } },
+            {"$group": {_id: "$user", total: {$sum: "$subtotal"}}},
+            {"$sort": { total : -1 } },
             {"$limit": limit },
             //{"$lookup" : { from: "User", localField: "_id", foreignField: "_id", as: "user" } },
         ])
 
-        let h = top.map(x => x._id)
+        //let h = top.map(x => x._id)
         
         const aa = await User.find({_id: {$in: top}})
 
@@ -216,6 +217,44 @@ exports.getTopUsers = async (req, res) => {
         return res.status(200).json({ok: true, data: top})
     } catch (error) {
         console.log(error)
-        return res.status.json(error)
+        return res.status(500).json(error)
+    }
+}
+
+exports.getOrdersBycurrentDate = async (req, res) => {
+    try {
+        //const orders = await Order.find({createdAt: moment(Date.now()).format()})
+        const orders = await Order.find({createdAt: {$eq: new Date('2021-05-22')}})
+        console.log(moment().format('YYYY-MM-DD'))
+        console.log(moment().subtract(1, "days").format('YYYY-MM-DD'))
+
+        return res.status(200).json({ok: true, data: orders})
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json(error)
+    }
+}
+
+exports.getTopProducts = async (req, res) => {
+    try {
+        const prods = await Order.aggregate([
+            {$unwind: "$items"}, 
+            {
+                $group: {
+                    _id: "$items.product", 
+                    total: {$sum: "$items.total"},
+                    qty: {$sum: "$items.quantity"}
+                }
+            },
+            {
+                $sort: {total: -1}
+            },
+            { $lookup : { from: "products", localField: "_id", foreignField: "_id", as: "product" } },
+        ])
+
+        return res.status(200).json({ok: true, data: prods})
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json(error)
     }
 }
