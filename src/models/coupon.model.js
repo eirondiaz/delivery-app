@@ -14,8 +14,8 @@ const CouponSchema = Schema({
         required:[true, 'disscount required'],
         trim:true,
         default: 0,
-        min: 0,
-        max: 90
+        min: [0, 'min must be 0'],
+        max: [90, 'max must be 90']
     },
     type:{
         type:String,
