@@ -227,12 +227,36 @@ exports.getTopUsers = async (req, res) => {
 
 exports.getOrdersBycurrentDate = async (req, res) => {
     try {
+        let total = 0
+        let totalyest = 0
         //const orders = await Order.find({createdAt: moment(Date.now()).format()})
-        const orders = await Order.find({createdAt: {$eq: new Date('2021-05-22')}})
-        console.log(moment().format('YYYY-MM-DD'))
-        console.log(moment().subtract(1, "days").format('YYYY-MM-DD'))
+        const orders = await Order.find({
+            createdAt: {
+                $gte: new Date(moment().format('YYYY-MM-DD') + 'T00:00:00.000Z'), 
+                $lt: new Date(moment().format('YYYY-MM-DD') + 'T23:59:59.999Z')
+            }
+        })
 
-        return res.status(200).json({ok: true, data: orders})
+        const ordyest = await Order.find({
+            createdAt: {
+                $gte: new Date(moment().subtract(1, "days").format('YYYY-MM-DD') + 'T00:00:00.000Z'), 
+                $lt: new Date(moment().subtract(1, "days").format('YYYY-MM-DD') + 'T23:59:59.999Z')
+            }
+        })
+        let count = orders.length > ordyest.length
+        //console.log(moment().format('YYYY-MM-DD'))
+        //console.log(moment().subtract(1, "days").format('YYYY-MM-DD'))
+        orders.map(x => {total = total + x.total})
+        ordyest.map(x => {totalyest = totalyest + x.total})
+        
+        let countm = total > totalyest
+
+        let sellTotal = {
+            total,
+            countm
+        }
+
+        return res.status(200).json({ok: true, data: orders, count, sellTotal})
     } catch (error) {
         console.log(error)
         return res.status(500).json(error)
