@@ -3,7 +3,6 @@ const Cart = require('../models/cart.model')
 const Coupon = require('../models/coupon.model')
 const Product = require('../models/product.model')
 const User = require('../models/user.model')
-const {isValidObjectId} = require('mongoose')
 const History = require('../models/history.model')
 const moment = require('moment')
 
@@ -109,14 +108,14 @@ exports.getOrderById = async(req, res)=>{
 // @access      private ADMIN
 exports.getAllOrders = async(req, res)=>{
     
-    const {status} = req.query
+    const { status, limit = 10 } = req.query
     try {
         
         let query = Order.find()
         
         if(status) query = Order.find({status})
         
-        const orders = await query
+        const orders = await query.limit(limit)
             .populate('user')
             .populate('coupon')
 
@@ -130,7 +129,7 @@ exports.getAllOrders = async(req, res)=>{
 
 // @desc        get all orders from user
 // @route       GET /api/v1/orders/user
-// @access      public USER
+// @access      private USER
 exports.getAllOrdersByUserLogged = async(req, res)=>{
     
     const {status} = req.query
@@ -197,6 +196,9 @@ exports.modifyOrderStatus = async (req, res)=> {
     }
 }
 
+// @desc        get top users 
+// @route       GET /api/v1/orders/top-users
+// @access      public
 exports.getTopUsers = async (req, res) => {
     const { limit = 10 } = req.query
     try {
@@ -235,6 +237,9 @@ exports.getOrdersBycurrentDate = async (req, res) => {
     }
 }
 
+// @desc        get top products
+// @route       GET /api/v1/orders/top-products
+// @access      public
 exports.getTopProducts = async (req, res) => {
     try {
         const prods = await Order.aggregate([
@@ -249,7 +254,7 @@ exports.getTopProducts = async (req, res) => {
             {
                 $sort: {total: -1}
             },
-            { $lookup : { from: "products", localField: "_id", foreignField: "_id", as: "product" } },
+            { $lookup: { from: "products", localField: "_id", foreignField: "_id", as: "product" } },
         ])
 
         return res.status(200).json({ok: true, data: prods})
