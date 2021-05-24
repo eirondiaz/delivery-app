@@ -115,7 +115,9 @@ exports.getAllOrders = async(req, res)=>{
         
         if(status) query = Order.find({status})
         
-        const orders = await query.limit(Number(limit))
+        const orders = await query
+            .sort({createdAt: -1})
+            .limit(Number(limit))
             .populate('user')
             .populate('coupon')
 
