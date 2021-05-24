@@ -4,8 +4,6 @@ const orderCtrl = require('../controllers/order.controller')
 const { adminMdlw } = require('../middlewares/admin.middleware')
 const { authMdlw } = require('../middlewares/auth.middleware')
 
-const {check}=require('express-validator')
-
 router.post('/',[
     authMdlw,
 ],  orderCtrl.createOrder)

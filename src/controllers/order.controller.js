@@ -115,7 +115,7 @@ exports.getAllOrders = async(req, res)=>{
         
         if(status) query = Order.find({status})
         
-        const orders = await query.limit(limit)
+        const orders = await query
             .populate('user')
             .populate('coupon')
 
