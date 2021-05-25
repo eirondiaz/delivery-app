@@ -3,11 +3,11 @@ const { Schema, model } = require("mongoose");
 const CouponSchema = Schema({
     code:{
         type: String,
-        required: true,
-        trim: [true, 'code required'],
+        required: [true, 'code required'],
+        trim: true,
         unique: true,
-        min: 16,
-        max: 16
+        min: [16, 'min must be 16'],
+        max: [16, 'max must be 16']
     },
     discount:{
         type: Number,
@@ -19,8 +19,8 @@ const CouponSchema = Schema({
     },
     type:{
         type:String,
-        enum: ['date', 'uses' ],
-        default: 'date'
+        enum: ['uses', 'date'],
+        default: 'uses'
     },
     createdAt:{
         type: Date,
