@@ -27,7 +27,7 @@ exports.getAll = async (req, res) => {
 exports.getByCode = async (req, res) => {
     const { code } = req.params
     try {
-        const coupon = await Coupon.findOne({code})
+        const coupon = await (await Coupon.findOne({code})).populate('usedBy')
 
         if (!coupon)
             return res.status(404).json({ok: false, msg: 'coupon not found'})
