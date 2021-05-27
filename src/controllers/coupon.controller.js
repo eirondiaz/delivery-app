@@ -28,7 +28,7 @@ exports.getByCode = async (req, res) => {
     const { code } = req.params
     try {
         const coupon = await Coupon.findOne({code})
-            .populate('usedBy.user')
+            .populate('usedBy.user') 
 
         if (!coupon)
             return res.status(404).json({ok: false, msg: 'coupon not found'})
