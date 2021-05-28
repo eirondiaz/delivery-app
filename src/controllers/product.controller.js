@@ -55,7 +55,7 @@ exports.createProduct = async (req, res) => {
 // @desc        update product
 // @route       PUT /api/v1/products/:id
 // @access      private ADMIN
-exports.updateProduct = async (re, res) => {
+exports.updateProduct = async (req, res) => {
     const {_id, ...rest} = req.body
     const { id } = req.params
     try {
@@ -75,8 +75,7 @@ exports.updateProduct = async (re, res) => {
 // @desc        delete product
 // @route       DELETE /api/v1/products/:id
 // @access      private ADMIN
-
-exports.deleteProduct = async (re, res) => {
+exports.deleteProduct = async (req, res) => {
     const { id } = req.params
     try {
         const prod = await Product.findById(id)
